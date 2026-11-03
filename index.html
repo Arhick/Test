@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Остаточные</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" hidden>
+    <div id="hud-top">
+      <div id="hud-day"></div>
+      <div id="hud-obj"></div>
+    </div>
+    <div id="timer" hidden></div>
+    <div id="hud-bars">
+      <div class="bar"><span>Здоровье</span><div class="track"><div id="bar-hp" class="fill hp"></div></div></div>
+      <div class="bar"><span id="hud-inf-label">Заражение</span><div class="track"><div id="bar-inf" class="fill inf"></div></div></div>
+      <div class="bar"><span>Выносливость</span><div class="track"><div id="bar-sta" class="fill sta"></div></div></div>
+      <div id="hud-mode"></div>
+    </div>
+    <div id="hud-inv">
+      <div id="inv-weapon"></div>
+      <div id="inv-inhib"></div>
+      <div id="inv-med"></div>
+      <div id="inv-bottle"></div>
+      <div id="inv-food"></div>
+    </div>
+    <div id="prompt"></div>
+    <div id="hint"></div>
+    <div id="toasts"></div>
+    <div id="hud-help">Tab — дневник · Esc — пауза</div>
+  </div>
+
+  <!-- Диалог -->
+  <div id="dialog" hidden>
+    <div id="dlg-who"></div>
+    <div id="dlg-text"></div>
+    <div id="dlg-choices"></div>
+    <button id="dlg-next">Далее <span class="k">Пробел</span></button>
+  </div>
+
+  <!-- Титульная карточка -->
+  <div id="card" hidden>
+    <div id="card-title"></div>
+    <div id="card-sub"></div>
+  </div>
+
+  <!-- Главное меню -->
+  <div id="menu" class="screen">
+    <div class="menu-box">
+      <h1>ОСТАТОЧНЫЕ</h1>
+      <p class="tag">Они помнят, кем были. Ты помнишь, что сделал.</p>
+      <button id="btn-new">Новая игра</button>
+      <button id="btn-continue" hidden>Продолжить</button>
+      <div class="controls">
+        <h3>Управление</h3>
+        <div><b>WASD</b> — движение · <b>Мышь</b> — фонарь и прицел</div>
+        <div><b>ЛКМ</b> — выстрел (или удар) · <b>Пробел / ПКМ</b> — монтировка</div>
+        <div><b>Shift</b> — бег (шумно) · <b>C</b> — красться · <b>F</b> — фонарь</div>
+        <div><b>E</b> — действие · <b>Q</b> — ингибитор · <b>H</b> — аптечка · <b>G</b> — бросить бутылку</div>
+        <div><b>Tab</b> — дневник · <b>Esc</b> — пауза · <b>1–4</b> — выбор в диалоге</div>
+        <p class="note">Акт I · дни 1–3 · ~25 минут. Лучше в наушниках.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ночь -->
+  <div id="night" class="screen" hidden>
+    <div class="panel">
+      <h2 id="night-title"></h2>
+      <p id="night-sub" class="sub"></p>
+      <div id="night-res"></div>
+      <div id="night-rows"></div>
+      <button id="night-btn">Пережить ночь</button>
+    </div>
+  </div>
+
+  <!-- Пауза -->
+  <div id="pause" class="screen" hidden>
+    <div class="panel small">
+      <h2>Пауза</h2>
+      <button id="btn-resume">Продолжить</button>
+      <button id="btn-diary">Дневник</button>
+      <button id="btn-restart-day">Начать день заново</button>
+      <button id="btn-menu">В главное меню</button>
+    </div>
+  </div>
+
+  <!-- Дневник -->
+  <div id="diary" class="screen" hidden>
+    <div class="panel">
+      <h2>Дневник Ильи</h2>
+      <div id="diary-list"></div>
+      <button id="btn-diary-close">Закрыть (Tab)</button>
+    </div>
+  </div>
+
+  <!-- Смерть -->
+  <div id="death" class="screen" hidden>
+    <div class="panel small">
+      <h2>Конец</h2>
+      <p id="death-text"></p>
+      <button id="death-btn">Начать день заново</button>
+    </div>
+  </div>
+
+  <!-- Итоги акта -->
+  <div id="summary" class="screen scroll" hidden>
+    <div class="panel wide">
+      <div id="summary-body"></div>
+      <div class="row">
+        <button id="btn-sum-new">Начать заново</button>
+        <button id="btn-sum-menu">В меню</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/util.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/maps.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
