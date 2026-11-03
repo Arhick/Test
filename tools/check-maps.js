@@ -16,6 +16,7 @@ let errors = 0;
 // Все варианты флагов, влияющих на объекты
 const variants = [
   {}, { tookSergey: true }, { mashaReleased: true }, { grachevBriefed: true },
+  { vadimChoice: 'two', sergeyAtChurch: true }, { vadimChoice: 'one' },
 ];
 
 for (const day of [1, 2, 3]) {

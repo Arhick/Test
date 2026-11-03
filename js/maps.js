@@ -238,9 +238,15 @@
     // Дома левого берега
     b.room(1, 1, 8, 8, '='); b.set(5, 8, 'D'); b.set(1, 4, 'w');
     b.room(10, 2, 6, 7, '='); b.set(12, 8, 'D');
-    b.room(1, 20, 9, 8, '='); b.set(5, 20, 'D');
+    // Покровская церковь (x 1..10, y 19..27)
+    b.room(1, 19, 10, 9, '=');
+    b.set(5, 19, 'D'); b.set(6, 19, 'D');
+    b.set(1, 23, 'w'); b.set(10, 23, 'w'); b.set(1, 25, 'w'); b.set(10, 25, 'w');
+    b.hline(2, 22, 3, 'b'); b.hline(7, 22, 3, 'b'); // скамьи
+    b.hline(2, 24, 3, 'b'); b.hline(7, 24, 3, 'b');
+    b.hline(4, 26, 4, 'b');                         // алтарь
     b.room(11, 21, 6, 6, '='); b.set(13, 21, 'D');
-    b.set(3, 3, 'b'); b.set(14, 4, 'b'); b.set(7, 25, 'b');
+    b.set(3, 3, 'b'); b.set(14, 4, 'b');
     // Блокпост
     b.vline(15, 9, 3, 's'); b.vline(15, 18, 3, 's');
     // Машины на мосту
@@ -251,6 +257,16 @@
     [[4, 17], [9, 11]].forEach(([x, y]) => b.set(x, y, 'T'));
 
     const released = () => !!S().d.flags.mashaReleased;
+    // Решение Ночи 2: two | one | sergey | refused
+    const vc = S().d.flags.vadimChoice || 'refused';
+    const vadimAlive = vc !== 'refused';
+    const calmAll = vc === 'two';
+    const LIT = ['Господи, помилуй...', 'Миром Господу помолимся', 'И ныне, и присно...', 'Свете тихий...'];
+    const parishioner = (x, y, i) => ({
+      type: 'infected', x, y, kind: 'stand', look: i % 2 ? 'old' : 'adult', facing: Math.PI / 2,
+      passive: vadimAlive && (calmAll || i < 2), lines: LIT,
+      onDeath: () => G.Story.parishionerKilled(),
+    });
 
     const objects = [
       { type: 'decor', kind: 'car', x: 24, y: 12, w: 3, h: 2, color: '#4a3a3a' },
@@ -266,6 +282,19 @@
       { type: 'light', x: 13, y: 15, r: 5, color: '#ffb060', flicker: true },  // бочка с огнём
       { type: 'light', x: 62, y: 16.5, r: 4, color: '#ffe0a0' },              // фары автобуса
       { type: 'light', x: 36, y: 10, r: 3, color: '#a0c0ff' },
+
+      // Церковь
+      { type: 'decor', kind: 'sign', x: 1, y: 18, text: 'Покровская церковь' },
+      { type: 'decor', kind: 'cross', x: 5.5, y: 26 },
+      { type: 'decor', kind: 'candles', x: 4, y: 26, when: () => vadimAlive },
+      { type: 'decor', kind: 'graffiti', x: 2, y: 21, text: 'ПРОСТИТЕ ИХ', when: () => !vadimAlive },
+      { type: 'light', x: 5.5, y: 25.5, r: 4.5, color: '#ffc070', flicker: true, when: () => vadimAlive },
+      { type: 'npc', id: 'vadim', name: 'Отец Вадим', x: 5, y: 25, color: '#1c1c22', talk: 'd3_vadim', when: () => vadimAlive },
+      { type: 'infected', id: 'vadim_res', x: 5, y: 25, kind: 'stand', look: 'priest', facing: -Math.PI / 2, hp: 4, when: () => !vadimAlive,
+        lines: ['Не бойтесь...', 'Отвори двери, чадо', 'Они ждут... ждут...'] },
+      parishioner(2, 23, 0), parishioner(4, 23, 1), parishioner(7, 23, 2), parishioner(9, 23, 3),
+      { type: 'infected', id: 'sergey_church', x: 8, y: 25, kind: 'stand', look: 'adult', passive: true, facing: -Math.PI / 2,
+        when: () => !!S().d.flags.sergeyAtChurch, lines: ['Лиза... в школу...', 'Я догоню...', 'Свете тихий...'] },
 
       { type: 'npc', id: 'grachev', name: 'Майор Грачёв', x: 12, y: 13, color: '#556b3a', talk: 'd3_grachev' },
       { type: 'npc', id: 'soldier1', name: 'Рядовой', x: 14, y: 10, color: '#4d5e36', talk: 'd3_soldier' },
@@ -284,7 +313,6 @@
       // «Остаточные» левого берега
       { type: 'infected', x: 2, y: 10, kind: 'wander', look: 'worker', path: [[2, 10], [8, 10]],
         lines: ['Нам обещали автобусы', 'Пропустите!'] },
-      { type: 'infected', x: 4, y: 24, kind: 'stand', look: 'old', lines: ['Где мой кот...'] },
       { type: 'infected', x: 13, y: 24, kind: 'knock', look: 'adult', facing: 0, lines: ['Открывай, это я'] },
       // На мосту
       { type: 'infected', x: 28, y: 14, kind: 'stand', look: 'adult', facing: 0, lines: ['Клюёт... клюёт...'] },
@@ -303,9 +331,9 @@
       // Предметы
       { type: 'item', id: 'd3_ammo', x: 3, y: 5, item: 'ammo', n: 3 },
       { type: 'item', id: 'd3_med', x: 13, y: 5, item: 'medkit', n: 1 },
-      { type: 'item', id: 'd3_bottle', x: 3, y: 22, item: 'bottle', n: 2 },
+      { type: 'item', id: 'd3_bottle', x: 2, y: 20, item: 'bottle', n: 2 },
       { type: 'item', id: 'd3_food', x: 14, y: 25, item: 'food', n: 2 },
-      { type: 'item', id: 'd3_inhib', x: 7, y: 26, item: 'inhib', n: 1 },
+      { type: 'item', id: 'd3_inhib', x: 9, y: 26, item: 'inhib', n: 1 },
 
       { type: 'trigger', id: 't_grachev', x: 10, y: 12, w: 4, h: 6, scene: 'd3_grachev' },
       { type: 'interact', id: 'i_detonator', x: 36.5, y: 14.5, r: 1.4, prompt: 'Подрывная машинка', scene: 'd3_detonator',
@@ -319,6 +347,7 @@
       outdoor: true, intro: 'd3_intro',
       objective: 'Добраться до блокпоста у моста',
       bridge: { x0: 16, x1: 57 },
+      bell: vadimAlive ? { x: 5.5, y: 19.5, every: 24 } : null,
     };
   };
 

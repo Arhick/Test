@@ -90,7 +90,11 @@ fs.mkdirSync(outDir, { recursive: true });
   await page.keyboard.press('KeyE'); await wait(100); await runScene([2]);
   await wait(400);
   await skipCard();
-  await shot('08-night2');
+  // Ночь 2 начинается с визита отца Вадима (вариант 3 = отдать Сергея, если доступно, иначе отказ/доза)
+  await shot('08-night2-vadim');
+  await runScene([{ sergey: 3, cop: 1, both: 3 }[variant]]);
+  await wait(300);
+  await shot('08b-night2');
   await page.click('#night-btn');
   await wait(200);
   await runScene([2, 1, 1, 1]);
@@ -100,6 +104,13 @@ fs.mkdirSync(outDir, { recursive: true });
   await god();
   await wait(1200);
   await shot('09-day3-start');
+
+  // День 3: церковь отца Вадима
+  await tp(5.5, 21.5); await wait(400);
+  await shot('09b-day3-church');
+  await tp(5.5, 24.2); await wait(200);
+  await page.keyboard.press('KeyE'); await wait(100); await runScene();
+  console.log('Церковь:', await page.evaluate(() => JSON.stringify({ choice: G.State.d.flags.vadimChoice, shelter: !!G.State.d.flags.churchShelter, atChurch: !!G.State.d.flags.sergeyAtChurch })));
 
   // День 3: Грачёв → детонатор → проводить беженцев
   await tp(11.5, 15.5); await wait(300); await runScene([2]);

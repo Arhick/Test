@@ -14,6 +14,7 @@
     worker: { coat: '#a8642a', skin: '#8a9480' },
     old: { coat: '#5a5a58', skin: '#9a9a88' },
     child: { coat: '#a05a78', skin: '#9aa090' },
+    priest: { coat: '#141418', skin: '#8a9480', hat: '#0c0c10' },
   };
 
   function init(canvas) {
@@ -159,6 +160,17 @@
         b.save(); b.font = `${ts * 0.32}px sans-serif`; b.fillStyle = 'rgba(230,230,220,0.9)';
         b.fillText(o.text, px, py + ts * 0.7); b.restore(); break;
       case 'sandbags': break;
+      case 'cross':
+        b.fillStyle = '#c8a040';
+        b.fillRect(px - ts * 0.06, py + ts * 0.1, ts * 0.12, ts * 0.8);
+        b.fillRect(px - ts * 0.28, py + ts * 0.3, ts * 0.56, ts * 0.1);
+        b.fillRect(px - ts * 0.18, py + ts * 0.62, ts * 0.36, ts * 0.08); break;
+      case 'candles':
+        for (let i = 0; i < 5; i++) {
+          const cx = px + ts * (0.3 + i * 0.75), cy = py + ts * 0.5;
+          b.fillStyle = '#e8dcc0'; b.fillRect(cx - 2, cy - ts * 0.1, 4, ts * 0.3);
+          b.fillStyle = '#ffd070'; b.beginPath(); b.arc(cx, cy - ts * 0.16, 3, 0, 7); b.fill();
+        } break;
       case 'charges':
         b.fillStyle = '#5a5a30'; b.fillRect(px + ts * 0.2, py + ts * 0.3, ts * 0.6, ts * 0.4);
         b.fillStyle = '#c02020'; b.fillRect(px + ts * 0.45, py + ts * 0.35, ts * 0.1, ts * 0.1); break;

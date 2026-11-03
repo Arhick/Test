@@ -265,7 +265,8 @@
       for (const id of ['lisa', 'sergey', 'kolya', 'dyachkov']) {
         const p = P[id];
         let st;
-        if (id === 'sergey' && !p.here) st = 'остался в подъезде на Комбинатской';
+        if (id === 'sergey' && D.flags.sergeyAtChurch) st = 'в Покровской церкви, среди прихожан';
+        else if (id === 'sergey' && !p.here) st = 'остался в подъезде на Комбинатской';
         else if (id === 'dyachkov' && !p.here) st = D.flags.copKilled ? 'убит тобой у больницы' : 'бродит у больницы';
         else if (!p.alive) st = 'мёртв';
         else if (p.locked) st = 'заперт — обратился';
@@ -275,6 +276,8 @@
         else st = 'с тобой';
         h.push(`<li><b>${esc(p.name)}</b> — ${st}</li>`);
       }
+      const vc = D.flags.vadimChoice;
+      if (vc) h.push(`<li><b>Отец Вадим</b> — ${vc === 'refused' ? 'стал одним из своих прихожан' : D.flags.killedParishioner ? 'жив, но больше не поёт при тебе' : 'жив, звонит в колокол у моста'}</li>`);
       const ref = D.flags.refugeesSaved || 0;
       if (ref) h.push(`<li><b>Беженцы</b> — ${ref} из 4 живы</li>`);
       h.push('</ul>');
@@ -285,7 +288,11 @@
       else h.push('<li>Мост взорван. Спасённые беженцы ищут, кому в городе можно верить.</li>');
       if (D.flags.mashaStudied) h.push('<li>Ступина изучает Машу. Слух о лекарстве разойдётся по городу — и не все ему обрадуются.</li>');
       if (D.flags.mashaReleased) h.push('<li>Где-то в городе ходит девочка, которая поёт. Беженцы зовут её «Колыбельной».</li>');
-      if (D.flags.sergeyLocked) h.push('<li>Сергей всё ещё стучит в дверь гаража. Лиза верит, что он там.</li>');
+      if (vc === 'refused') h.push('<li>Покровская церковь стоит тёмная. Внутри у алтаря кто-то в рясе всё ещё повторяет проповедь.</li>');
+      else if (D.flags.refugeesAtChurch) h.push('<li>Беженцы живут в церкви отца Вадима. Грачёв называет её «чумным бараком» и ждёт повода.</li>');
+      else if (vc) h.push('<li>Отец Вадим держит прихожан словом и ингибиторами. Он верит, что они ждут. Ему понадобится ещё.</li>');
+      if (D.flags.sergeyAtChurch) h.push('<li>Сергей подпевает «Свете тихий» у алтаря. Лиза ходит в церковь каждый день.</li>');
+      if (D.flags.sergeyLocked && !D.flags.sergeyAtChurch) h.push('<li>Сергей всё ещё стучит в дверь гаража. Лиза верит, что он там.</li>');
       if (D.flags.promisedLisa) h.push('<li>Ты обещал Лизе вернуться за её отцом.</li>');
       if (D.flags.kolyaWandering) h.push('<li>По ночам кто-то заводит брошенные машины скорой.</li>');
       h.push('<li>Вертолётная эвакуация — через 11 дней. Мест не хватит на всех.</li>');

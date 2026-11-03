@@ -9,7 +9,7 @@
       day: 1,
       phase: 'day', // day | night | summary
       axes: { humanity: 0, trust: 0, cure: 0 }, // -100..100, игрок их не видит
-      factions: { military: 0, doctors: 0, refugees: 0 },
+      factions: { military: 0, doctors: 0, refugees: 0, church: 0 },
       flags: {},
       kills: 0,
       spared: 0,
@@ -93,6 +93,8 @@
         const obj = JSON.parse(raw);
         this.d = obj.d;
         this.checkpoint = obj.checkpoint;
+        // Совместимость со старыми сохранениями
+        for (const st of [this.d, this.checkpoint]) if (st && st.factions && st.factions.church == null) st.factions.church = 0;
         return true;
       } catch (e) { return false; }
     },

@@ -34,7 +34,7 @@
       this.triggers = []; this.interacts = []; this.decor = []; this.lights = [];
       this.decals = []; this.thrown = []; this.ghosts = [];
       this.timer = null; this.escortOn = false; this.hordeOn = false; this.hordeT = 3;
-      this.ending = false; this.bridgeGone = false; this.tracer = null;
+      this.ending = false; this.bridgeGone = false; this.tracer = null; this.bellT = null;
       this.objective = map.objective;
       this.darkness = { 1: 0.96, 2: 0.94, 3: 0.92 }[day] || 0.95;
       this.rebake = true;
@@ -151,6 +151,17 @@
       // Заражение → галлюцинации
       this.halluc = U.clamp((hero.infection - 45) / 55, 0, 1);
       this.updateGhosts(dt);
+
+      // Колокол церкви: громкий шум, который уводит «остаточных» к церкви
+      if (this.map.bell) {
+        this.bellT = (this.bellT == null ? 8 : this.bellT) - dt;
+        if (this.bellT <= 0) {
+          this.bellT = this.map.bell.every;
+          const dd = U.dist(this.map.bell.x, this.map.bell.y, p.x, p.y);
+          A.bell(Math.max(0.15, 1 - dd / 40));
+          this.world.noise(this.map.bell.x, this.map.bell.y, 11, 'bell');
+        }
+      }
 
       // День 3
       if (this.map.bridge) this.updateBridge(dt);
@@ -453,8 +464,10 @@
 
     startNight(n) {
       UI.show('hud', false);
+      const alloc = () => UI.night(n, (a) => this.applyNight(n, a));
       UI.card(`Ночь ${n}`, 'Подстанция скорой помощи №2', () => {
-        UI.night(n, (alloc) => this.applyNight(n, alloc));
+        // Отец Вадим приходит до распределения: его просьба соперничает с нуждами своих.
+        if (n === 2) this.scene('n_vadim', alloc); else alloc();
       }, 2400);
     },
 
